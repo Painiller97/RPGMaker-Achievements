@@ -1,12 +1,12 @@
 NOMBRES_LOGRO=[
-"Logro 1",
-"Logro 2",
+"Aventurero Extrovertido",
+"Crónicas Celestiales",
 "Logro 3"
 ]
 
 DESCRIPCIONES_LOGRO=[
-"Este es el Logro 1",
-"Este es el Logro 2",
+"Habla con un total de 50 NPC",
+"Lee todos los Mementos",
 "Este es el Logro 3"
 ]
 
@@ -88,8 +88,8 @@ class Pokemon_Achievements_Scene
   def pbText
     overlay=@sprites["overlay"].bitmap
     pubid=sprintf("%05d",$Trainer.publicID($Trainer.id))
-    baseColor=Color.new(72,72,72)
-    shadowColor=Color.new(160,160,160)
+    baseColor=Color.new(250,250,250)
+    shadowColor=Color.new(60,60,60)
     textPositions=[
        [_INTL("Texto Prueba"),274,326,false,baseColor,shadowColor]
       ]
@@ -119,6 +119,22 @@ class Pokemon_Achievements_Scene
     pbUpdateSpriteHash(@sprites)
     Input.update
   end  
+  
+  def textoLogro
+    pbSetSystemFont(@sprites["overlay2"].bitmap)
+    overlay=@sprites["overlay2"].bitmap
+    overlay.clear 
+    baseColor=Color.new(5,5,5)
+    shadowColor=Color.new(220,220,220)
+    drawTextEx(overlay,157,250,320,0,@nombrelogro[@select],baseColor,shadowColor)
+    drawTextEx(overlay,12,305,320,0,@desclogro[@select],baseColor,shadowColor)
+    # textPositions=[
+    #[_INTL,(@nombrelogro[@select]),157,250,0,baseColor,shadowColor],
+    #[_INTL("{1} Descripcion ",@desclogro[@select]),12,305,0,baseColor,shadowColor]
+    #]
+    #drawTextEx(overlay,157,250,360,0,@nombrelogro[@select],baseColor,shadowColor) 
+   #pbDrawTextPositions(overlay,textPositions)
+  end  
  
   def pbInput
     if @page==0
@@ -132,6 +148,7 @@ class Pokemon_Achievements_Scene
     if Input.trigger?(Input::C) 
       pbSEPlay("Select")
       switchPage
+      textoLogro
     end
   end  
  
@@ -153,6 +170,7 @@ class Pokemon_Achievements_Scene
       firstPage
     else
       secondPage
+      textoLogro
     end
   end  
   
@@ -167,13 +185,11 @@ class Pokemon_Achievements_Scene
     @sprites["overlay"].visible=true
     @sprites["TitleBox"].visible=false
     @sprites["TextBox"].visible=false
+ 
     @sprites["overlay2"].visible=false
     @logros[0].iconogrande.visible = false
     @logros[1].iconogrande.visible = false
     @logros[2].iconogrande.visible = false
-    @logros[0].nombre.visible = false
-    @logros[1].nombre.visible = false
-    @logros[2].nombre.visible = false
   end
   
   def secondPage
@@ -182,7 +198,7 @@ class Pokemon_Achievements_Scene
     for logro in @logros
       logro.icono.visible=false
     end
-   
+    
     @sprites["selector"].visible=false
     @sprites["overlay"].visible=false
     @sprites["TitleBox"].visible=true
@@ -191,14 +207,15 @@ class Pokemon_Achievements_Scene
     if @select==0
       @logros[0].iconogrande.visible = true
       @logros[1].iconogrande.visible = false
-      @logros[0].nombre.visible = true
-      @logros[1].nombre.visible = false
-    end  
-    if @select==1
+      @logros[2].iconogrande.visible = false
+    elsif @select==1
       @logros[0].iconogrande.visible = false
       @logros[1].iconogrande.visible = true
-      @logros[0].nombre.visible = false
-      @logros[1].nombre.visible = true
+      @logros[2].iconogrande.visible = false
+    elsif @select==2
+      @logros[0].iconogrande.visible = false
+      @logros[1].iconogrande.visible = false
+      @logros[2].iconogrande.visible = true
     end
   end
   
@@ -220,22 +237,6 @@ class Pokemon_Achievements
     @scene=scene
   end
  
-  def pbStartScreen
-    @scene.pbStartScene
-    @scene.pbLogros
-    @scene.pbEndScene
-  end
-end
-
-end
-  
-
-
-class Pokemon_Achievements
-  def initialize(scene)
-    @scene=scene
-  end
-
   def pbStartScreen
     @scene.pbStartScene
     @scene.pbLogros
